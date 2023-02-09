@@ -1,0 +1,21 @@
+server:
+  # 基本配置
+  readTimeout:         "60s"                        # 请求读取超时时间，一般不需要配置。默认为60秒
+  writeTimeout:        "0"                          # 数据返回写入超时时间，一般不需要配置。默认不超时（0）
+  maxHeaderBytes:      "10240"                      # 请求Header大小限制（Byte）。默认为10KB
+  keepAlive:           true                         # 是否开启Keep-Alive功能。默认true
+  idleTimeout:         "60s"                        # 仅当Keep-Alive开启时有效，请求闲置时间。默认为60秒
+  serverAgent:         "GoFrame HTTP Server"        # 服务端Agent信息。默认为"GoFrame HTTP Server"
+
+logger:
+  level : "all"
+  path : "./error_log/"
+  file : "{Y-m-d}.log"
+  rotateExpire : "1d"  # 一天一个回滚
+  rotateBackupLimit :  7   # 保留7个日志文件
+  RotateBackupCompress : 9  # 日志文件压缩级别，0-9,9最高
+  stdout : false  # 禁用标准输出，只输出到文件
+  Flags : 44 #日期 时:分:秒:毫秒 文件:行号
+
+database:
+  dsn : "sqlserver://sa:dingxin@localhost:1433?database=test"

@@ -1,6 +1,6 @@
 项目结构：
 api 路由组及内部handler
-manifest/config 配置文件
+manifest/config 配置文件，配置好数据库
 error_log 日志
 middleware 中间件
 model 数据结构

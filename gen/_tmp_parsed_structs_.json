@@ -1,0 +1,18 @@
+[
+  [
+    "Account",
+    "gorm.Model",
+    "User",
+    "Pass"
+  ],
+  [
+    "RegisterInput",
+    "User",
+    "Pass"
+  ],
+  [
+    "LoginInput",
+    "User",
+    "Pass"
+  ]
+]

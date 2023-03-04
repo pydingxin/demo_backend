@@ -1,8 +1,0 @@
-model包含数据库对应的数据模型，和handler输入输出的业务模型
-数据模型都有gorm.Model
-业务模型开头为 Input_ 或 Output_
-
-每个文件里都要在init()里初始化数据模型，如：
-func init() {
-	tool.GetGormConnection().AutoMigrate(&Account{})
-}

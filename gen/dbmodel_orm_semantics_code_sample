@@ -1,0 +1,171 @@
+package do
+
+// dbmodel orm封装文件
+
+import (
+	orm "GOMOD_MODULE_NAME/model/orm"			//这个包名从go.mod获取
+	dbmodel "GOMOD_MODULE_NAME/model/dbmodel" 	//这个包名从go.mod获取
+)
+
+func init() {
+	orm.Conn().AutoMigrate(&dbmodel.OBJECTMODEL{})
+}
+
+// 增 -------------------------------------------------------------------
+func OBJECTMODEL_CreateOne(data *dbmodel.OBJECTMODEL) *dbmodel.OBJECTMODEL {
+	// 创建一个
+	result := orm.Conn().Create(data)
+	orm.PanicGormResultError("do.OBJECTMODEL_CreateOne", result)
+	return data
+}
+
+func OBJECTMODEL_CreateMulti(data *[]dbmodel.OBJECTMODEL) *[]dbmodel.OBJECTMODEL {
+	// 创建多个
+	result := orm.Conn().Create(data)
+	orm.PanicGormResultError("do.OBJECTMODEL_CreateMulti", result)
+	return data
+}
+
+// 删 -------------------------------------------------------------------
+func OBJECTMODEL_DeleteOneById(id uint) int64 {
+	result := orm.Conn().Delete(&dbmodel.OBJECTMODEL{}, id)
+	orm.PanicGormResultError("do.OBJECTMODEL_DeleteOneById", result)
+	return result.RowsAffected
+}
+
+func OBJECTMODEL_DeleteMultiByFields(withFields *dbmodel.OBJECTMODEL) int64 {
+	// 根据withFields的非零字段，删除符合条件的多条数据。where里的struct只有非零生效
+	// 对于主键，可以指定ID，也可以指定其他复合主键
+	result := orm.Conn().Where(withFields).Delete(withFields)
+	orm.PanicGormResultError("do.OBJECTMODEL_DeleteMultiByFields", result)
+	return result.RowsAffected
+}
+
+func OBJECTMODEL_DeleteMultiByIds(ids []uint) int64 {
+	// 根据指定的多个id，删除多条数据
+	result := orm.Conn().Delete(&dbmodel.OBJECTMODEL{}, ids)
+	orm.PanicGormResultError("do.OBJECTMODEL_DeleteMultiByIds", result)
+	return result.RowsAffected
+}
+
+// 查 -------------------------------------------------------------------
+/*
+	如果where有更复杂的条件，需要handler自己实现，或者补充本模板
+*/
+
+func OBJECTMODEL_QueryOneById(id uint) *dbmodel.OBJECTMODEL {
+	// 根据id查询
+	var queryResult dbmodel.OBJECTMODEL
+	result := orm.Conn().Find(&queryResult, id)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryOneById", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryMultiByIds(ids []uint) *[]dbmodel.OBJECTMODEL {
+	//根据多个id，查询多条数据
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Find(&queryResult, ids)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByIds", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryMultiByFields(withFields *dbmodel.OBJECTMODEL) *[]dbmodel.OBJECTMODEL {
+	//根据非零字段指定，查询多条数据。where里的struct只有非零字段生效
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Where(withFields).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByFields", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryOneByFields(withFields *dbmodel.OBJECTMODEL) *dbmodel.OBJECTMODEL {
+	//根据非零字段指定，查询1条数据。where里的struct只有非零字段生效。未找到则ID=0
+	var queryResult dbmodel.OBJECTMODEL
+	result := orm.Conn().Limit(1).Where(withFields).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByFields", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryExistsByFields(withFields *dbmodel.OBJECTMODEL) bool {
+	//根据非零字段查找，看该数据是否存在.存在返回true
+	one:=OBJECTMODEL_QueryOneByFields(withFields)
+	return 0!=one.ID
+}
+
+func OBJECTMODEL_QueryAll() *[]dbmodel.OBJECTMODEL {
+	// 返回所有表中数据
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryAll", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryAllCount() int64 {
+	// 返回所有表中数据个数
+	var count int64
+	result:= orm.Conn().Model(&dbmodel.OBJECTMODEL{}).Where("1=1").Count(&count)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryAllCount", result)
+	return count
+}
+
+func OBJECTMODEL_QueryMultiByLike(field, reg string) *[]dbmodel.OBJECTMODEL {
+	// where like, ("Name","pyx%") → where name like pyx%
+	// 自动转换field命名格式
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Where(orm.ToOrmFieldName(field)+" LIKE ?", reg).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryLike", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryMultiByIn(field string, vals []string) *[]dbmodel.OBJECTMODEL {
+	// where in, ("ID", []string{"1","3"}) → where id in ["1","4"]
+	// 自动转换field命名格式
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Where(orm.ToOrmFieldName(field)+" IN ?", vals).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByIn", result)
+	return &queryResult
+}
+
+func OBJECTMODEL_QueryMultiByBetween(field string, a, b interface{}) *[]dbmodel.OBJECTMODEL {
+	// where between, ("ID",2,4) → where id between '2' and '4'
+	// 自动转换field命名格式
+	var queryResult []dbmodel.OBJECTMODEL
+	result := orm.Conn().Where(orm.ToOrmFieldName(field)+" between ? and ?", a, b).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByBetween", result)
+	return &queryResult
+}
+
+/*
+	select取出指定字段，而非所有字段。取出指定字段，本身就是一个模式，可以和其他模式配合。
+
+func OBJECTMODEL_QueryMulti_Columns1_ByFields(withFields *dbmodel.OBJECTMODEL) *[]iomodel.Columns1 {
+	// 这是个模板，这个模式不必自动生成，手动改改Columns1类型就能用
+	// 使用gorm高级查询的智能选择字段，只要修改下类型，就能取出指定字段
+	var queryResult []iomodel.Columns1
+	result := orm.Conn().Model(withFields).Where(withFields).Find(&queryResult)
+	orm.PanicGormResultError("do.OBJECTMODEL_QueryColumns1ByFields", result)
+	return &queryResult
+}
+*/
+
+// 改 -------------------------------------------------------------------
+func OBJECTMODEL_UpdateOneById(withIdAndFields *dbmodel.OBJECTMODEL) int64 {
+	// 根据id，更新非零字段。Model指定主键。Updates里的struct只有非零字段生效。
+	result := orm.Conn().Model(withIdAndFields).Updates(withIdAndFields)
+	orm.PanicGormResultError("do.OBJECTMODEL_UpdateOneById", result)
+	return result.RowsAffected
+}
+
+func OBJECTMODEL_UpdateMultiByIds(ids *[]uint, updas *dbmodel.OBJECTMODEL) int64 {
+	// 根据id，更新非零字段。Model指定主键。Updates里的struct只有非零字段生效。
+	result := orm.Conn().Model(updas).Where("id IN ?", *ids).Updates(updas)
+	orm.PanicGormResultError("do.OBJECTMODEL_UpdateMultiByIds", result)
+	return result.RowsAffected
+}
+
+func OBJECTMODEL_UpdateMultiByFields(selec, updas *dbmodel.OBJECTMODEL) int64 {
+	// 根据selec指定字段选择，选中后用updas里非零字段更新。Where/Updates都只有非零字段生效
+	// 返回更新的行数
+	result := orm.Conn().Where(selec).Updates(updas)
+	orm.PanicGormResultError("do.OBJECTMODEL_UpdateMultiByFields", result)
+	return result.RowsAffected
+}

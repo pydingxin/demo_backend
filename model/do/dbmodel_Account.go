@@ -91,7 +91,7 @@ func Account_QueryExistsByFields(withFields *dbmodel.Account) bool {
 	// 若存在: 返回true，withFields的ID也会被设置
 	one:=Account_QueryOneByFields(withFields)
 	if 0!=one.ID{
-		withFields.ID = one.ID
+		withFields.ID = one.ID //ID必须直接写在model里，不能用gorm.Model
 		return true
 	}else{
 		return false

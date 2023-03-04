@@ -22,5 +22,9 @@
     "Pass",
     "NewPass",
     "NewPass2"
+  ],
+  [
+    "DeleteInput",
+    "User"
   ]
 ]

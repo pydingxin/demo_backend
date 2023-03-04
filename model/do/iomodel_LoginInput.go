@@ -18,5 +18,5 @@ func Request_To_LoginInput(r *ghttp.Request) *iomodel.LoginInput {
     
 func LoginInput_To_Account(in *iomodel.LoginInput) *dbmodel.Account {
     // 表单获取的iomodel转为dbmodel 
-	return &dbmodel.Account{User: in.User, Pass: in.Pass, }
+	return &dbmodel.Account{Pass: in.Pass, User: in.User, }
 }    

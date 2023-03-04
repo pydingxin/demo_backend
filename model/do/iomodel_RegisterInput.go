@@ -18,5 +18,5 @@ func Request_To_RegisterInput(r *ghttp.Request) *iomodel.RegisterInput {
     
 func RegisterInput_To_Account(in *iomodel.RegisterInput) *dbmodel.Account {
     // 表单获取的iomodel转为dbmodel 
-	return &dbmodel.Account{User: in.User, Pass: in.Pass, }
+	return &dbmodel.Account{Pass: in.Pass, User: in.User, }
 }    

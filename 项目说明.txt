@@ -1,17 +1,14 @@
 项目结构：
-api 所有handler和路由组，已经有三个组:account账号处理的组，unauth未登录即可访问的组 test没啥用的组
+api 路由组及内部handler
 manifest/config 配置文件
 error_log 日志
 middleware 中间件
 model 数据结构
 static 静态文件夹
-tool 其他的工具
+pkg 公用工具
 
-请求流程：
-main.go 的 router group → 
-api 的 handler → 
-model 的数据结构 → 
-操作数据库 → 
-按固定格式返回 {status:true/false, msg:"失败时错误信息", data:"成功时所求数据"}
+开发流程：
+定义dbmodel和iomodel，用gen生成语义代码
+用语义代码开发handler即可
 
 上线前重新生成httpsCertification的证书

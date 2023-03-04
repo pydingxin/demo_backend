@@ -78,7 +78,8 @@ func Account_QueryMultiByFields(withFields *dbmodel.Account) *[]dbmodel.Account 
 }
 
 func Account_QueryOneByFields(withFields *dbmodel.Account) *dbmodel.Account {
-	//根据非零字段指定，查询1条数据。where里的struct只有非零字段生效。未找到则ID=0
+	// 根据非零字段指定，查询1条数据。where里的struct只有非零字段生效
+	// 这两个指针不相同，以返回数据为准，未找到则返回值的ID=0
 	var queryResult dbmodel.Account
 	result := orm.Conn().Limit(1).Where(withFields).Find(&queryResult)
 	orm.PanicGormResultError("do.Account_QueryMultiByFields", result)
@@ -86,9 +87,15 @@ func Account_QueryOneByFields(withFields *dbmodel.Account) *dbmodel.Account {
 }
 
 func Account_QueryExistsByFields(withFields *dbmodel.Account) bool {
-	//根据非零字段查找，看该数据是否存在.存在返回true
+	// 根据非零字段查找，看该数据是否存在
+	// 若存在: 返回true，withFields的ID也会被设置
 	one:=Account_QueryOneByFields(withFields)
-	return 0!=one.ID
+	if 0!=one.ID{
+		withFields.ID = one.ID
+		return true
+	}else{
+		return false
+	}
 }
 
 func Account_QueryAll() *[]dbmodel.Account {

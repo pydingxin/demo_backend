@@ -6,9 +6,9 @@ import (
     "github.com/gogf/gf/v2/net/ghttp" 
 )
 
-func Request_To_LoginInput(r *ghttp.Request) *iomodel.LoginInput {
+func Request_To_ChangePassInput(r *ghttp.Request) *iomodel.ChangePassInput {
     // 从request表单获取并验证iomodel结构体。 以Request_To_为开头，更符合使用习惯
-    var in *iomodel.LoginInput
+    var in *iomodel.ChangePassInput
     if err := r.Parse(&in); err != nil {
         response.FailMsg(r, err.Error())
         r.ExitAll() // 如果有数据校验有问题，ExitAll会停止handler的执行后续流程
@@ -16,7 +16,7 @@ func Request_To_LoginInput(r *ghttp.Request) *iomodel.LoginInput {
     return in
 }
     
-func LoginInput_To_Account(in *iomodel.LoginInput) *dbmodel.Account {
+func ChangePassInput_To_Account(in *iomodel.ChangePassInput) *dbmodel.Account {
     // 表单获取的iomodel转为dbmodel 
 	return &dbmodel.Account{User: in.User, Pass: in.Pass, }
 }    

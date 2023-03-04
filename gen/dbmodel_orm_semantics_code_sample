@@ -78,7 +78,8 @@ func OBJECTMODEL_QueryMultiByFields(withFields *dbmodel.OBJECTMODEL) *[]dbmodel.
 }
 
 func OBJECTMODEL_QueryOneByFields(withFields *dbmodel.OBJECTMODEL) *dbmodel.OBJECTMODEL {
-	//根据非零字段指定，查询1条数据。where里的struct只有非零字段生效。未找到则ID=0
+	// 根据非零字段指定，查询1条数据。where里的struct只有非零字段生效
+	// 这两个指针不相同，以返回数据为准，未找到则返回值的ID=0
 	var queryResult dbmodel.OBJECTMODEL
 	result := orm.Conn().Limit(1).Where(withFields).Find(&queryResult)
 	orm.PanicGormResultError("do.OBJECTMODEL_QueryMultiByFields", result)
@@ -86,9 +87,15 @@ func OBJECTMODEL_QueryOneByFields(withFields *dbmodel.OBJECTMODEL) *dbmodel.OBJE
 }
 
 func OBJECTMODEL_QueryExistsByFields(withFields *dbmodel.OBJECTMODEL) bool {
-	//根据非零字段查找，看该数据是否存在.存在返回true
+	// 根据非零字段查找，看该数据是否存在
+	// 若存在: 返回true，withFields的ID也会被设置
 	one:=OBJECTMODEL_QueryOneByFields(withFields)
-	return 0!=one.ID
+	if 0!=one.ID{
+		withFields.ID = one.ID
+		return true
+	}else{
+		return false
+	}
 }
 
 func OBJECTMODEL_QueryAll() *[]dbmodel.OBJECTMODEL {

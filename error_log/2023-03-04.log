@@ -1,0 +1,41 @@
+2023-03-04 15:30:20.432 [ERRO] errorHandler.go:16: exception recovered: do.Account_CreateOne gorm result error: mssql: 违反了 UNIQUE KEY 约束“UQ__accounts__7FC76D720C08895F”。不能在对象“dbo.accounts”中插入重复键。重复键值为 (dingxin)。
+Stack:
+1.  demo_backend/middleware.MiddlewareErrorHandler
+    C:/Users/dingxin/Desktop/demo_backend/middleware/errorHandler.go:16
+2.  github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1.5
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:96
+3.  github.com/gogf/gf/v2/net/ghttp.niceCallFunc
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_func.go:55
+4.  github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:95
+5.  github.com/gogf/gf/v2/util/gutil.TryCatch
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/util/gutil/gutil.go:56
+6.  github.com/gogf/gf/v2/net/ghttp.(*middleware).Next
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:49
+7.  demo_backend/middleware.MiddlewareLog
+    C:/Users/dingxin/Desktop/demo_backend/middleware/middlewareLog.go:10
+8.  github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1.5
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:96
+9.  github.com/gogf/gf/v2/net/ghttp.niceCallFunc
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_func.go:55
+10. github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:95
+11. github.com/gogf/gf/v2/util/gutil.TryCatch
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/util/gutil/gutil.go:56
+12. github.com/gogf/gf/v2/net/ghttp.(*middleware).Next
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:49
+13. github.com/gogf/gf/v2/net/ghttp.internalMiddlewareServerTracing
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_middleware_tracing.go:78
+14. github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1.5
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:96
+15. github.com/gogf/gf/v2/net/ghttp.niceCallFunc
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_func.go:55
+16. github.com/gogf/gf/v2/net/ghttp.(*middleware).Next.func1
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:95
+17. github.com/gogf/gf/v2/util/gutil.TryCatch
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/util/gutil/gutil.go:56
+18. github.com/gogf/gf/v2/net/ghttp.(*middleware).Next
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_request_middleware.go:49
+19. github.com/gogf/gf/v2/net/ghttp.(*Server).ServeHTTP
+    C:/Users/dingxin/go/pkg/mod/github.com/gogf/gf/v2@v2.3.1/net/ghttp/ghttp_server_handler.go:132
+

@@ -7,28 +7,29 @@
     "Pass"
   ],
   [
-    "RegisterInput",
+    "AccountRegisterInput",
     "User",
     "Pass"
   ],
   [
-    "LoginInput",
+    "AccountLoginInput",
     "User",
     "Pass"
   ],
   [
-    "ChangePassInput",
+    "AccountChangePassInput",
     "User",
     "Pass",
     "NewPass",
     "NewPass2"
   ],
   [
-    "DeleteInput",
+    "AccountDeleteInput",
     "User"
   ],
   [
     "SmallAccount",
+    "ID",
     "User",
     "Pass"
   ]

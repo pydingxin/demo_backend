@@ -146,6 +146,9 @@ func OBJECTMODEL_SaveToExcelFile(fpath string, arr *[]IOORDB.OBJECTMODEL, titles
 	}
 
 	data := *arr
+    if len(data)>50000{
+        return errors.New("数据量大于50000 拒绝输出")
+    }
 	for idx, cnt := 0, len(data); idx < cnt; idx++ {
 		if err = insertRow(OBJECTMODEL_ToInterface(&data[idx])); err != nil {
 			return err
@@ -294,5 +297,8 @@ def append_imports_to_iomodel_do_files():
             innerCode+= f'\n    "github.com/gogf/gf/v2/net/ghttp"'
         if content.find("excelize.")>=0:
             innerCode+= f'\n    "github.com/xuri/excelize/v2"'
+        if content.find("errors.")>=0:
+            innerCode+= f'\n    "errors"'
+
         head = f"package do \nimport ( {innerCode} \n)\n"
         put_file_content(filepath, head+content)

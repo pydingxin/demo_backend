@@ -26,5 +26,10 @@
   [
     "DeleteInput",
     "User"
+  ],
+  [
+    "SmallAccount",
+    "User",
+    "Pass"
   ]
 ]

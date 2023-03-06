@@ -18,5 +18,5 @@ func Request_To_ChangePassInput(r *ghttp.Request) *iomodel.ChangePassInput {
     
 func ChangePassInput_To_Account(in *iomodel.ChangePassInput) *dbmodel.Account {
     // 表单获取的iomodel转为dbmodel 
-	return &dbmodel.Account{Pass: in.Pass, User: in.User, }
+	return &dbmodel.Account{User: in.User, Pass: in.Pass, }
 }    

@@ -79,7 +79,7 @@ def parse_command_from_file_lines(arr):
         if line== "": # 空行
             continue 
 
-        if line.startswith("// CMD_IOMODEL_") or line.startswith("// CMD_DBMODEL_"): # 所有命令有特殊的前缀
+        if line.startswith("// CMD_") or line.startswith("// CMD_"): # 所有命令有特殊的前缀
             cmd= line.split(" ")[1]
             cur_struct_cmds.append(cmd) # 缓存该命令
             if SHOW_DETAILS:

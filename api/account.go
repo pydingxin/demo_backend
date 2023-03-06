@@ -9,6 +9,13 @@ import (
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
+func init() {
+	// 初始化account
+	if do.Account_QueryAllCount() == 0 {
+		do.Account_CreateOne(&dbmodel.Account{User: "admin", Pass: "DaPingYi666!"})
+	}
+}
+
 // 获取当前账号的信息
 func get_current_user_account(r *ghttp.Request) *dbmodel.Account {
 	id := r.Session.MustGet("accountId").Uint()

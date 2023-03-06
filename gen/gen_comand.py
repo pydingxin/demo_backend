@@ -93,6 +93,74 @@ def execute_commands(structCmds):
                 fromStruct = cmd.replace("CMD_IOMODEL_QUERY_FROM_DBMODEL_","")
                 execute_command_append_dbmodel_query_from_code(struct, fromStruct)
 
+            # 结构体保存为excel文件
+            if cmd.startswith("CMD_IOMODEL_STRUCT_SAVE_TO_EXCEL_FILE"):
+                execute_command_save_struct_slice_to_excel_file(struct,"iomodel")
+            if cmd.startswith("CMD_DBMODEL_STRUCT_SAVE_TO_EXCEL_FILE"):
+                execute_command_save_struct_slice_to_excel_file(struct,"dbmodel")
+
+#--------------------------------------------------------------------------------------------------------
+def execute_command_save_struct_slice_to_excel_file(struct,ioOrDb):
+    # 结构体保存为excel文件，可用于iomodel或dbmodel，传入ioOrDb替换结构体所在包名
+    print(f"生成代码——结构体{ioOrDb}.{struct}保存为excel文件。")
+
+    #生成innercode
+    assure_all_structs_loaded()
+    fields = all_structs_map[struct][1:]  #第一个是struct名字
+    inner_code=""
+    for field in fields:
+        inner_code+= (f"in.{field}, ")
+
+    code="""
+func OBJECTMODEL_ToInterface(in *IOORDB.OBJECTMODEL) *[]interface{} {
+	return &[]interface{}{INNERCODE}
+}
+func OBJECTMODEL_SaveToExcelFile(fpath string, arr *[]IOORDB.OBJECTMODEL, titles *[]interface{}) (err error) {
+	file := excelize.NewFile()
+	defer func() {
+		file.Close()
+	}()
+
+	streamWriter, err := file.NewStreamWriter("Sheet1")
+	if err != nil {
+		return err
+	}
+
+	var insertidx int = 1
+	insertRow := func(row *[]interface{}) (err error) {
+		if cell, err := excelize.CoordinatesToCellName(1, insertidx); err != nil {
+			return err
+		} else {
+			insertidx++
+			if err = streamWriter.SetRow(cell, *row); err != nil {
+				return err
+			}
+		}
+		return
+	}
+
+	if titles != nil {
+		if err = insertRow(titles); err != nil {
+			return err
+		}
+	}
+
+	data := *arr
+	for idx, cnt := 0, len(data); idx < cnt; idx++ {
+		if err = insertRow(OBJECTMODEL_ToInterface(&data[idx])); err != nil {
+			return err
+		}
+	}
+
+	if err = streamWriter.Flush(); err != nil {
+		return err
+	}
+	return file.SaveAs(fpath)
+}
+    """.replace("OBJECTMODEL",struct).replace("INNERCODE",inner_code).replace("IOORDB",ioOrDb)
+    dst_file_path = gen_config.do_file_path_of_iomodel(struct)
+    append_content_to_file(dst_file_path,code)
+    print(f"添加函数 {struct}_ToInterface(), {struct}_SaveToExcelFile() 到文件："+ dst_file_path)
 #--------------------------------------------------------------------------------------------------------
 def shared_fields_of_two_struct_models(m1,m2):
     # 获取dbmodel和iomodel共有的字段，方便execute_command_iomodel_convert_to_dbmodels生成代码
@@ -137,14 +205,22 @@ func OBJECTMODEL_QueryMulti_SUBSET_ByFields(withFields *dbmodel.OBJECTMODEL) *[]
     orm.PanicGormResultError("do.OBJECTMODEL_QueryMulti_SUBSET_ByFields", result)
     return &queryResult
 }
+func OBJECTMODEL_QueryAll_SUBSET() *[]iomodel.SUBSET {
+    // 导出库表所有行生成iomodel子结构体。
+    // 使用gorm高级查询的智能选择字段，select返回类型所拥有的字段，而不select所有字段
+    var queryResult []iomodel.SUBSET
+    result := orm.Conn().Model(&dbmodel.OBJECTMODEL{}).Where("1=1").Find(&queryResult)
+    orm.PanicGormResultError("do.OBJECTMODEL_QueryAll_SUBSET", result)
+    return &queryResult
+}
     """.replace("OBJECTMODEL",fromStruct).replace("SUBSET",subsetStruct)
     path = gen_config.do_file_path_of_iomodel(subsetStruct)
     assure_iomodel_generatedFilePath_exists(path)
     append_content_to_file(path,code)
 
-    appended_funcname = "OBJECTMODEL_QueryMulti_SUBSET_ByFields" \
+    appended_funcname = "OBJECTMODEL_QueryMulti_SUBSET_ByFields(),OBJECTMODEL_QueryAll_SUBSET()" \
         .replace("OBJECTMODEL",fromStruct).replace("SUBSET",subsetStruct)
-    print(f"生成代码——查询dbmodel库表生成iomodel子结构体。\n添加函数 {appended_funcname}() 到文件 {path}")
+    print(f"生成代码——查询dbmodel库表生成iomodel子结构体。\n添加函数 {appended_funcname} 到文件 {path}")
 
 #--------------------------------------------------------------------------------------------------------
 def execute_command_make_iomodel_parse_request_file(struct):
@@ -216,6 +292,7 @@ def append_imports_to_iomodel_do_files():
             innerCode+= f'\n    orm "{goMod}/model/orm"'
         if content.find("ghttp.")>=0:
             innerCode+= f'\n    "github.com/gogf/gf/v2/net/ghttp"'
-
+        if content.find("excelize.")>=0:
+            innerCode+= f'\n    "github.com/xuri/excelize/v2"'
         head = f"package do \nimport ( {innerCode} \n)\n"
         put_file_content(filepath, head+content)

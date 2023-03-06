@@ -18,4 +18,4 @@ logger:
   Flags : 44 #日期 时:分:秒:毫秒 文件:行号
 
 database:
-  dsn : "sqlserver://sa:dingxin@localhost:1433?database=test"
+  dsn : "sqlserver://sa:dingxin@localhost:1433?database=fagaiju"

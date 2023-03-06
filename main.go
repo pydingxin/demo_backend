@@ -17,12 +17,14 @@ func main() {
 	s.Use(middleware.MiddlewareCORS)         //跨域
 
 	s.Group("/api", func(group *ghttp.RouterGroup) {
+		// api文件夹下的文件，不能以api_开头，不然有引入错误
 		// 哪些接口需要登录，由各组自己确定
+		group.Group("/test", api.RouterGroup_Test)       // 示范
 		group.Group("/account", api.RouterGroup_Account) // 账号类
 
 	})
 
-	s.SetPort(80)
+	s.SetPort(8080)
 	s.SetIndexFolder(true) //静态文件
 	s.SetServerRoot("./static")
 	s.Run()

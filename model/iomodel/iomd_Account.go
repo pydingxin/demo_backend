@@ -29,4 +29,9 @@ type DeleteInput struct {
 	User string `v:"required|length:4,40#请输入账号|账号长度为{min}到{max}位"`
 }
 
-// # CMD_IOMODEL_QUERY_FROM_DBMODEL_Account Account查询生成子结构体
+// CMD_IOMODEL_QUERY_FROM_DBMODEL_Account Account查询生成子结构体
+// CMD_IOMODEL_STRUCT_SAVE_TO_EXCEL_FILE
+type SmallAccount struct {
+	User string
+	Pass string
+}

@@ -5,14 +5,25 @@ import (
 	"demo_backend/model/dbmodel"
 	"demo_backend/model/do"
 	"demo_backend/pkg/response"
+	"demo_backend/pkg/tool"
 
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
+func LoginWorks(ac *dbmodel.Account, r *ghttp.Request) {
+	//登录触发事件
+	if id, err := r.Session.Id(); err == nil {
+		tool.SessionIdSet(ac.User, id) //在tool里记录sessionid，给websocket用
+	}
+}
+func LogoutWorks(r *ghttp.Request) {
+	//登出触发事件
+}
+
 func init() {
 	// 初始化account
 	if do.Account_QueryAllCount() == 0 {
-		do.Account_CreateOne(&dbmodel.Account{User: "admin", Pass: "DaPingYi666!"})
+		do.Account_CreateOne(&dbmodel.Account{User: "admin", Pass: "Abc123."})
 	}
 }
 
@@ -33,6 +44,7 @@ func assure_current_user_is_admin(r *ghttp.Request) {
 
 // 注销登录 /api/account/logout
 func handler_api_account_logout(r *ghttp.Request) {
+	LogoutWorks(r)
 	r.Session.RemoveAll()
 	response.DoneData(r, "已登出")
 }
@@ -91,6 +103,7 @@ func handler_api_account_login(r *ghttp.Request) {
 	if do.Account_QueryExistsByFields(ac) {
 		r.Session.Set("session_alive", true)
 		r.Session.Set("accountId", ac.ID)
+		LoginWorks(ac, r)
 		response.DoneData(r, "登录成功")
 	} else {
 		response.FailMsg(r, "登录失败")

@@ -8,7 +8,6 @@ import (
 
 func RouterGroup_Test(group *ghttp.RouterGroup) {
 	group.GET("/excel", handler_api_test_excelDownload)
-
 }
 
 func handler_api_test_excelDownload(r *ghttp.Request) {

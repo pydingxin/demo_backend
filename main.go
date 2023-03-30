@@ -21,6 +21,7 @@ func main() {
 		// 哪些接口需要登录，由各组自己确定
 		group.Group("/test", api.RouterGroup_Test)       // 示范
 		group.Group("/account", api.RouterGroup_Account) // 账号类
+		group.Group("/ws", api.RouterGroup_Websocket)
 
 	})
 

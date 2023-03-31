@@ -7,6 +7,19 @@
     "Pass"
   ],
   [
+    "WebsocketChannel",
+    "ID",
+    "Name",
+    "Owner"
+  ],
+  [
+    "WebsocketChannelFollower",
+    "ChannelID",
+    "ChannelName",
+    "UserID",
+    "UserName"
+  ],
+  [
     "AccountRegisterInput",
     "User",
     "Pass"

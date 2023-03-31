@@ -3,9 +3,12 @@ package api
 import (
 	"fmt"
 
+	_ "github.com/gogf/gf/contrib/nosql/redis/v2"
+
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 
+	"demo_backend/middleware"
 	"demo_backend/pkg/response"
 	"demo_backend/pkg/tool"
 
@@ -48,24 +51,18 @@ func allwsGet(username string) (ws *ghttp.WebSocket) {
 	}
 */
 func userOfConnection(r *ghttp.Request) (username string, valid bool) {
-
 	username = r.Get("username").String()
 	sessionid := r.Get("sessionid").String()
-	if username == "" || sessionid == "" {
-		valid = false // 连接未加参数
-		return
-	}
-	if tool.SessionIdGet(username) == sessionid {
-		valid = true
+	if username == "" || sessionid == "" || tool.SessionIdGet(username) != sessionid {
+		valid = false // 连接未加参数 或参数对不上
 	} else {
-		valid = false
+		valid = true
 	}
 	return
 }
 
-//-------------------------------------------------------------------------------------------
-
 func handler_api_ws_connect(r *ghttp.Request) {
+	// 建立websocket连接
 	ws, err := r.WebSocket() //http upgrade to ws
 	if err != nil {
 		response.FailMsg(r, err)
@@ -82,9 +79,30 @@ func handler_api_ws_connect(r *ghttp.Request) {
 	}
 }
 
+//-------------------------------------------------------------------------------------------
+
+func handler_api_ws_channel_make(r *ghttp.Request) {
+	// key := r.Get("key").String()
+	// val := r.Get("val").String()
+	// fmt.Println(key, val)
+	// var ctx = gctx.New()
+	// _, err := g.Redis().Set(ctx, key, val)
+	// if err != nil {
+	// 	g.Log().Fatal(ctx, err)
+	// }
+	// value, err := g.Redis().Get(ctx, key)
+	// if err != nil {
+	// 	g.Log().Fatal(ctx, err)
+	// }
+	// response.DoneData(r, value)
+}
+
 func RouterGroup_Websocket(group *ghttp.RouterGroup) {
 	// 不能登录验证，因为ws连接不带cookie，不能检验gfsessionid
-	group.GET("/connect", handler_api_ws_connect)
+	group.GET("/connect", handler_api_ws_connect) // api/ws/connect
 
-	// group.Group("/", func(group *ghttp.RouterGroup) {	})
+	group.Group("/channel", func(group *ghttp.RouterGroup) {
+		group.Middleware(middleware.MiddlewareAuth)
+		group.POST("/make", handler_api_ws_channel_make) // api/ws/channel/make
+	})
 }

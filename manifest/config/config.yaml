@@ -19,3 +19,9 @@ logger:
 
 database:
   dsn : "sqlserver://sa:dingxin@localhost:1433?database=fagaiju"
+
+# Redis 配置示例
+redis:
+  default:
+    address: 127.0.0.1:6379
+    db:      1

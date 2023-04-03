@@ -9,15 +9,8 @@
   [
     "WebsocketChannel",
     "ID",
-    "Name",
-    "Owner"
-  ],
-  [
-    "WebsocketChannelFollower",
-    "ChannelID",
-    "ChannelName",
-    "UserID",
-    "UserName"
+    "DeletedAt",
+    "AccountID"
   ],
   [
     "AccountRegisterInput",

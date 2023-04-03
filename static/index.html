@@ -44,7 +44,7 @@
 	}
     $(function () {
         // var url = "ws://10.178.64.17:8080/ws";
-        var url = `ws://10.178.64.17:8080/api/ws/connect?username=admin&sessionid=${sessionid()}`;
+        var url = `ws://10.178.64.17:8080/api/ws/connect?accountid=1&sessionid=${sessionid()}`;
         var ws  = new WebSocket(url);
         try {
             // ws连接成功

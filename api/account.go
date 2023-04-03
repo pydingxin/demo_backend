@@ -12,8 +12,9 @@ import (
 
 func LoginWorks(ac *dbmodel.Account, r *ghttp.Request) {
 	//登录触发事件
-	if id, err := r.Session.Id(); err == nil {
-		tool.SessionIdSet(ac.User, id) //在tool里记录sessionid，给websocket用
+	accountid := r.Session.MustGet("accountId").Uint()
+	if sessionid, err := r.Session.Id(); err == nil {
+		tool.SessionIdSet(accountid, sessionid) //在tool里记录sessionid，给websocket用
 	}
 }
 func LogoutWorks(r *ghttp.Request) {
@@ -24,6 +25,8 @@ func init() {
 	// 初始化account
 	if do.Account_QueryAllCount() == 0 {
 		do.Account_CreateOne(&dbmodel.Account{User: "admin", Pass: "Abc123."})
+		do.Account_CreateOne(&dbmodel.Account{User: "bar", Pass: "Abc123."})
+		do.Account_CreateOne(&dbmodel.Account{User: "foo", Pass: "Abc123."})
 	}
 }
 

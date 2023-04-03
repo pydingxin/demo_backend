@@ -6,18 +6,18 @@ import (
 
 //------------------------------------------------------------------------------------------
 // 管理所有用户登录后的sessionid，方便websocket验证状态
-var allSessionId map[string]string = make(map[string]string, 100)
+var allSessionId map[uint]string = make(map[uint]string, 100)
 var allSessionIdMtx *gmutex.Mutex = gmutex.New()
 
-func SessionIdSet(username, id string) {
+func SessionIdSet(userid uint, sessionid string) {
 	allSessionIdMtx.LockFunc(func() {
-		allSessionId[username] = id
+		allSessionId[userid] = sessionid
 	})
 }
-func SessionIdGet(username string) (id string) {
+func SessionIdGet(userid uint) (sessionid string) {
 	allSessionIdMtx.RLockFunc(func() {
-		if old, alreadyExists := allSessionId[username]; alreadyExists {
-			id = old
+		if old, alreadyExists := allSessionId[userid]; alreadyExists {
+			sessionid = old
 		}
 	})
 	return
